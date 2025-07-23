@@ -3,7 +3,7 @@
     --primary-color: #6a0572; /* Deep Purple */
     --secondary-color: #ab349d; /* Lighter Purple */
     --accent-color: #e63946; /* Red for emphasis */
-    --text-color: #f1faee; /* Light text */
+    --text-color: #8345da; /* Soft light lavender */
     --bg-color: #1d3557; /* Dark Blue */
     --card-bg: rgba(255, 255, 255, 0.1);
     --border-color: rgba(255, 255, 255, 0.2);
@@ -107,7 +107,7 @@ h1::after {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
-    color: var(--text-color);
+    color: var(--text-color); /* Changed from white to text-color variable */
     font-size: 1rem;
     transition: border-color var(--transition-speed) ease;
 }
