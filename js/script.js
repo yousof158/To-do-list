@@ -297,3 +297,251 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+
+// Footer Modal Functions
+function showAbout() {
+    const modal = createModal('About Modern To-Do List', `
+        <div class="modal-body">
+            <p>Modern To-Do List is a beautiful and feature-rich task management application designed to help you stay organized and productive.</p>
+            
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <ul>
+                <li>✨ Beautiful modern design with glass-morphism effects</li>
+                <li>🎬 Animated background video for visual appeal</li>
+                <li>📱 Fully responsive design for all devices</li>
+                <li>💾 Automatic local storage for data persistence</li>
+                <li>🚫 Duplicate task prevention</li>
+                <li>📊 Real-time task statistics</li>
+                <li>⌨️ Keyboard shortcuts for productivity</li>
+                <li>🔔 Success and error notifications</li>
+                <li>📤 Export/Import functionality</li>
+            </ul>
+            
+            <h3><i class="fas fa-code"></i> Technology</h3>
+            <p>Built with vanilla HTML, CSS, and JavaScript for optimal performance and compatibility.</p>
+            
+            <h3><i class="fas fa-heart"></i> Version</h3>
+            <p>Version 2.0 - Enhanced with footer and improved functionality</p>
+        </div>
+    `);
+    document.body.appendChild(modal);
+}
+
+function showHelp() {
+    const modal = createModal('Help & Instructions', `
+        <div class="modal-body">
+            <h3><i class="fas fa-plus"></i> Adding Tasks</h3>
+            <ul>
+                <li>Type your task in the input field</li>
+                <li>Press <span class="keyboard-shortcut">Enter</span> or click "Add Task"</li>
+                <li>Tasks are automatically saved to your browser</li>
+            </ul>
+            
+            <h3><i class="fas fa-check"></i> Managing Tasks</h3>
+            <ul>
+                <li>Click the <i class="fas fa-check" style="color: #28a745;"></i> button to mark as complete</li>
+                <li>Click the <i class="fas fa-trash" style="color: #dc3545;"></i> button to delete a task</li>
+                <li>Click on task text to toggle completion status</li>
+            </ul>
+            
+            <h3><i class="fas fa-broom"></i> Bulk Actions</h3>
+            <ul>
+                <li><strong>Clear Completed:</strong> Removes all completed tasks</li>
+                <li><strong>Clear All:</strong> Removes all tasks (with confirmation)</li>
+            </ul>
+            
+            <h3><i class="fas fa-download"></i> Export/Import</h3>
+            <ul>
+                <li><strong>Export:</strong> Download your tasks as a JSON file</li>
+                <li><strong>Import:</strong> Upload a previously exported JSON file</li>
+            </ul>
+            
+            <h3><i class="fas fa-shield-alt"></i> Data Safety</h3>
+            <p>Your tasks are stored locally in your browser and never sent to external servers. Always export important tasks as backup!</p>
+        </div>
+    `);
+    document.body.appendChild(modal);
+}
+
+function showKeyboardShortcuts() {
+    const modal = createModal('Keyboard Shortcuts', `
+        <div class="modal-body">
+            <h3><i class="fas fa-keyboard"></i> Available Shortcuts</h3>
+            <ul>
+                <li><span class="keyboard-shortcut">Enter</span> - Add new task (when input is focused)</li>
+                <li><span class="keyboard-shortcut">Ctrl + Enter</span> - Add task from anywhere</li>
+                <li><span class="keyboard-shortcut">Escape</span> - Clear input field and unfocus</li>
+                <li><span class="keyboard-shortcut">Tab</span> - Navigate between elements</li>
+                <li><span class="keyboard-shortcut">Space</span> - Activate focused button</li>
+            </ul>
+            
+            <h3><i class="fas fa-mouse"></i> Mouse Actions</h3>
+            <ul>
+                <li><strong>Click task text:</strong> Toggle completion</li>
+                <li><strong>Hover buttons:</strong> See interactive animations</li>
+                <li><strong>Right-click task:</strong> Context menu (browser default)</li>
+            </ul>
+            
+            <h3><i class="fas fa-mobile-alt"></i> Touch Gestures</h3>
+            <ul>
+                <li><strong>Tap:</strong> Same as click</li>
+                <li><strong>Long press:</strong> Context menu on supported devices</li>
+            </ul>
+            
+            <p><em>Tip: Use keyboard shortcuts to boost your productivity!</em></p>
+        </div>
+    `);
+    document.body.appendChild(modal);
+}
+
+function createModal(title, content) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> ${title}</h2>
+                <span class="close">&times;</span>
+            </div>
+            ${content}
+        </div>
+    `;
+    
+    // Show modal
+    modal.style.display = 'block';
+    
+    // Close modal events
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.onclick = () => {
+        modal.style.display = 'none';
+        setTimeout(() => modal.remove(), 300);
+    };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            setTimeout(() => modal.remove(), 300);
+        }
+    };
+    
+    // Close with Escape key
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            modal.style.display = 'none';
+            setTimeout(() => modal.remove(), 300);
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+    
+    return modal;
+}
+
+// Enhanced TodoApp class with better error handling
+class EnhancedTodoApp extends TodoApp {
+    constructor() {
+        super();
+        this.initializeEnhancedFeatures();
+    }
+    
+    initializeEnhancedFeatures() {
+        // Add error boundary
+        window.addEventListener('error', (e) => {
+            console.error('TodoApp Error:', e.error);
+            this.showNotification('An error occurred. Please refresh the page.', 'error');
+        });
+        
+        // Add unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled Promise Rejection:', e.reason);
+            this.showNotification('An error occurred. Please try again.', 'error');
+        });
+    }
+    
+    // Override addTask with enhanced error handling
+    addTask() {
+        try {
+            const taskText = this.taskInput.value.trim();
+            
+            if (!taskText) {
+                this.showNotification('Please enter a task!', 'error');
+                this.shakeElement(this.taskInput);
+                this.taskInput.focus();
+                return;
+            }
+
+            if (taskText.length > 100) {
+                this.showNotification('Task is too long! Maximum 100 characters.', 'error');
+                this.shakeElement(this.taskInput);
+                return;
+            }
+
+            // Check for duplicate tasks
+            if (this.isDuplicateTask(taskText)) {
+                this.showNotification('This task already exists!', 'error');
+                this.shakeElement(this.taskInput);
+                this.taskInput.focus();
+                return;
+            }
+
+            const task = {
+                id: this.taskIdCounter++,
+                text: taskText,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            this.tasks.unshift(task);
+            this.taskInput.value = '';
+            
+            this.renderTasks();
+            this.updateStats();
+            this.saveToStorage();
+            this.showEmptyState();
+            
+            this.showNotification('Task added successfully!', 'success');
+            this.successAnimation(this.addTaskBtn);
+            
+            // Focus back to input for better UX
+            setTimeout(() => this.taskInput.focus(), 100);
+            
+        } catch (error) {
+            console.error('Error adding task:', error);
+            this.showNotification('Failed to add task. Please try again.', 'error');
+        }
+    }
+    
+    // Enhanced saveToStorage with error handling
+    saveToStorage() {
+        try {
+            localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
+            localStorage.setItem('taskIdCounter', this.taskIdCounter.toString());
+        } catch (error) {
+            console.error('Error saving to storage:', error);
+            this.showNotification('Failed to save tasks. Storage may be full.', 'error');
+        }
+    }
+}
+
+// Replace the original TodoApp initialization
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        window.todoApp = new EnhancedTodoApp();
+    } catch (error) {
+        console.error('Failed to initialize TodoApp:', error);
+        // Fallback to basic functionality
+        window.todoApp = new TodoApp();
+    }
+});
+
+// Add smooth scrolling to footer links
+document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scroll to top when clicking logo in footer
+    const footerLogo = document.querySelector('.footer-section h3');
+    if (footerLogo) {
+        footerLogo.style.cursor = 'pointer';
+        footerLogo.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+});
+
